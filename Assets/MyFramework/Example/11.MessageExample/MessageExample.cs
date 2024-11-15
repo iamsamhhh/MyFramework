@@ -24,27 +24,26 @@ namespace MyFramework
             Debug.LogFormat("Received Do msg:{0}", data);
         }
 
-        void DoSomething2(object data, bool data2)
+        void DoSomething2(object data)
         {
-            if(data2)
-                Debug.LogFormat("Received Do msg: {0}", data);
+            Debug.LogFormat("Received Do2 msg: {0}", (bool)data);
         }
 
         private void Awake() {
 
-            AddEvent("Do", (Callback<string>)DoSomething);
-            AddEvent("Do2", (Callback<string, bool>)DoSomething2);
+            AddEvent("Do", DoSomething);
+            AddEvent("Do2", DoSomething2);
         }
 
         private IEnumerator Start()
         {
             BroadcastEvent("Do", "hello");
-            BroadcastEvent("Do2", "1", false);
+            BroadcastEvent("Do2", false);
 
             yield return new WaitForSeconds(1.0f);
 
             BroadcastEvent("Do", "hello1");
-            BroadcastEvent("Do2", "3", true);
+            BroadcastEvent("Do2", true);
             Destroy(this);
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
@@ -54,8 +53,8 @@ namespace MyFramework
         void OnDestroy()
         {
             BroadcastEvent("Do", "event removing...");
-            RemoveEvent("Do", (Callback<string>)DoSomething);
-            RemoveEvent("Do2", (Callback<string, bool>)DoSomething2);
+            RemoveEvent("Do", DoSomething);
+            RemoveEvent("Do2", DoSomething2);
             Debug.Log("events removed");
             BroadcastEvent("Do", "haha");
         }
