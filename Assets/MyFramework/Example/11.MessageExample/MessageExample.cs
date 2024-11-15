@@ -54,8 +54,9 @@ namespace MyFramework
         void OnDestroy()
         {
             BroadcastEvent("Do", "event removing...");
-            RemoveEvent("Do", DoSomething);
-            RemoveEvent("Do2", DoSomething2);
+            // RemoveEvent("Do", DoSomething);
+            // RemoveEvent("Do2", DoSomething2);
+            RemoveAllLocalEvents();
             Debug.Log("events removed");
             BroadcastEvent("Do", "haha");
         }

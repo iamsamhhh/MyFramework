@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace MyFramework
@@ -109,6 +110,7 @@ namespace MyFramework
         {
             RemoveEventCheck(eventType);
             MsgCenter.RemoveEvent(eventType, callback);
+            meventsDict[eventType] -= callback;
         }
 
 
@@ -170,6 +172,14 @@ namespace MyFramework
         // }
 
         #endregion
+
+        public void RemoveAllLocalEvents(){
+            foreach (var record in meventsDict){
+                RemoveEventCheck(record.Key);
+                MsgCenter.RemoveEvent(record.Key, record.Value);
+            }
+            meventsDict.Clear();
+        }
 
         #endregion
         
