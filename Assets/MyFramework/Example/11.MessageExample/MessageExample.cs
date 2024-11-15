@@ -12,6 +12,7 @@ namespace MyFramework
         private static void MenuClicked()
         {
             MsgCenter.RemoveAllEvent("Do");
+            MsgCenter.RemoveAllEvent("Do2");
             UnityEditor.EditorApplication.isPlaying = true;
 
             new GameObject("MsgReceiverObj")

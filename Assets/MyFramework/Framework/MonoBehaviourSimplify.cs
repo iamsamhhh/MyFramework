@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MyFramework
@@ -34,7 +36,16 @@ namespace MyFramework
 
         #region msgCenter
 
+        private Dictionary<string, Callback<object>> meventsDict = new Dictionary<string, Callback<object>>();
+
         #region Add event
+
+        private void AddEventCheck(string eventType){
+            if (!meventsDict.ContainsKey(eventType))
+            {
+                meventsDict.Add(eventType, null);
+            }
+        }
 
         // public void AddEvent(string eventType, Callback callback)
         // {
@@ -43,7 +54,9 @@ namespace MyFramework
 
         public void AddEvent(string eventType, Callback<object> callback)
         {
+            AddEventCheck(eventType);
             MsgCenter.AddEvent(eventType, callback);
+            meventsDict[eventType] += callback;
         }
 
         // public void AddEvent<A, B>(string eventType, Callback<A, B> callback)
@@ -70,6 +83,22 @@ namespace MyFramework
 
         #region remove event
 
+        private void RemoveEventCheck(string eventType){
+            if (meventsDict.ContainsKey(eventType))
+            {
+                Callback<object> d = meventsDict[eventType];
+
+                if (d == null)
+                {
+                    throw new Exception(string.Format("该事件{0}没有委托，无法移除", eventType));
+                }
+            }
+            else
+            {
+                throw new Exception(string.Format("事件{0}不存在", eventType));
+            }
+        }
+
         // public void RemoveEvent(string eventType, Callback callback)
         // {
         //     MsgCenter.RemoveEvent(eventType, callback);
@@ -78,6 +107,7 @@ namespace MyFramework
 
         public void RemoveEvent(string eventType, Callback<object> callback)
         {
+            RemoveEventCheck(eventType);
             MsgCenter.RemoveEvent(eventType, callback);
         }
 
