@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 
@@ -30,21 +28,41 @@ namespace MyFramework
             Debug.LogFormat("Received Do2 msg: {0}", (bool)data);
         }
 
+        private class Example{
+            public Example(string message, int number){
+                this.message = message;
+                this.number = number;
+            }
+            string message;
+            int number;
+            public void Log(){
+                Debug.LogFormat("message is : {0}, with number: {1}", message, number);
+            }
+        }
+
+        void EventWithCustomObject(object data){
+            Example test = data as Example;
+            test.Log();
+        }
+
         private void Awake() {
 
             AddEvent("Do", DoSomething);
             AddEvent("Do2", DoSomething2);
+            AddEvent("CustomExample", EventWithCustomObject);
         }
 
         private IEnumerator Start()
         {
             BroadcastEvent("Do", "hello");
             BroadcastEvent("Do2", false);
+            BroadcastEvent("CustomExample", new Example("custom class", 1));
 
             yield return new WaitForSeconds(1.0f);
 
             BroadcastEvent("Do", "hello1");
             BroadcastEvent("Do2", true);
+            BroadcastEvent("CustomExample", new Example("custom class", 2));
             Destroy(this);
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
@@ -54,11 +72,10 @@ namespace MyFramework
         void OnDestroy()
         {
             BroadcastEvent("Do", "event removing...");
-            // RemoveEvent("Do", DoSomething);
-            // RemoveEvent("Do2", DoSomething2);
             RemoveAllLocalEvents();
             Debug.Log("events removed");
             BroadcastEvent("Do", "haha");
+            BroadcastEvent("CustomExample", new Example("custom class", 2));
         }
     }
 }
