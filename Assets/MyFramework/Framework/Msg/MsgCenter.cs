@@ -189,7 +189,6 @@ namespace MyFramework
 
             if (messageTable.TryGetValue(eventType, out d))
             {
-                Debug.Log(d);
                 Callback<A> callback = d as Callback<A>;
 
                 if (callback != null)

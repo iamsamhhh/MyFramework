@@ -8,7 +8,7 @@ namespace MyFramework
     public class MessageExample : MonoBehaviourSimplify
     {
 #if UNITY_EDITOR
-        [UnityEditor.MenuItem("MyFramework/Example/11.框架示例", false, 11)]
+        [UnityEditor.MenuItem("MyFramework/Example/11.Message example", false, 11)]
         private static void MenuClicked()
         {
             MsgCenter.RemoveAllEvent("Do");
@@ -47,15 +47,13 @@ namespace MyFramework
             BroadcastEvent("Do2", "3", true);
         }
 
-        
-        //protected override void OnBeforeDestroy()
-        //{
-
-        //}
-    }
-
-    public partial class EventTypes
-    {
-
+        void OnDestroy()
+        {
+            BroadcastEvent("Do", "event removing...");
+            RemoveEvent("Do", (Callback<string>)DoSomething);
+            RemoveEvent("Do2", (Callback<string, bool>)DoSomething2);
+            Debug.Log("events removed");
+            BroadcastEvent("Do", "haha");
+        }
     }
 }
