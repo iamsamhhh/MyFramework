@@ -2,8 +2,6 @@
 using UnityEditor;
 #endif
 
-using UnityEngine;
-
 namespace MyFramework{
     public class Copy2ClipboardExample
     {

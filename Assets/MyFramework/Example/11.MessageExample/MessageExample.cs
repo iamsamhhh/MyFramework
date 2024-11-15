@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 
@@ -12,6 +10,7 @@ namespace MyFramework
         private static void MenuClicked()
         {
             MsgCenter.RemoveAllEvent("Do");
+            MsgCenter.RemoveAllEvent("Do2");
             UnityEditor.EditorApplication.isPlaying = true;
 
             new GameObject("MsgReceiverObj")
@@ -24,27 +23,46 @@ namespace MyFramework
             Debug.LogFormat("Received Do msg:{0}", data);
         }
 
-        void DoSomething2(object data, bool data2)
+        void DoSomething2(object data)
         {
-            if(data2)
-                Debug.LogFormat("Received Do msg: {0}", data);
+            Debug.LogFormat("Received Do2 msg: {0}", (bool)data);
+        }
+
+        private class Example{
+            public Example(string message, int number){
+                this.message = message;
+                this.number = number;
+            }
+            string message;
+            int number;
+            public void Log(){
+                Debug.LogFormat("message is : {0}, with number: {1}", message, number);
+            }
+        }
+
+        void EventWithCustomObject(object data){
+            Example test = data as Example;
+            test.Log();
         }
 
         private void Awake() {
 
-            AddEvent("Do", (Callback<string>)DoSomething);
-            AddEvent("Do2", (Callback<string, bool>)DoSomething2);
+            AddEvent("Do", DoSomething);
+            AddEvent("Do2", DoSomething2);
+            AddEvent("CustomExample", EventWithCustomObject);
         }
 
         private IEnumerator Start()
         {
             BroadcastEvent("Do", "hello");
-            BroadcastEvent("Do2", "1", false);
+            BroadcastEvent("Do2", false);
+            BroadcastEvent("CustomExample", new Example("custom class", 1));
 
             yield return new WaitForSeconds(1.0f);
 
             BroadcastEvent("Do", "hello1");
-            BroadcastEvent("Do2", "3", true);
+            BroadcastEvent("Do2", true);
+            BroadcastEvent("CustomExample", new Example("custom class", 2));
             Destroy(this);
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
@@ -54,10 +72,10 @@ namespace MyFramework
         void OnDestroy()
         {
             BroadcastEvent("Do", "event removing...");
-            RemoveEvent("Do", (Callback<string>)DoSomething);
-            RemoveEvent("Do2", (Callback<string, bool>)DoSomething2);
+            RemoveAllLocalEvents();
             Debug.Log("events removed");
             BroadcastEvent("Do", "haha");
+            BroadcastEvent("CustomExample", new Example("custom class", 2));
         }
     }
 }
