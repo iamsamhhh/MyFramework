@@ -33,12 +33,16 @@ namespace MyFramework{
         private void Awake() {
             // pool = new SimpleObjectPool<GameObject>(BulletFactoryMethod, BulletResetMethod, 5);
 
-            // OnStart(()=>{
-            //     mOnStart();
-            // });
+            OnStart(()=>{
+                mOnStart();
+            });
+
+            OnUpdate(()=>{
+                Debug.Log("test");
+            });
         }
 
-        void Start(){
+        void mOnStart(){
             guiMgr.Set(new Vector2(3840, 2160), 1);
                 
             menuGo = guiMgr.AddPanel(MENU_NAME, ELayer.Bottom);
@@ -54,6 +58,7 @@ namespace MyFramework{
             }
 
             if(!guiMgr.OnClick(MENU_NAME, NEXTLEVEL_BTN_NAME, ()=>{
+                RemoveAllLoacalUpdates();
             })){
 
                 Debug.LogErrorFormat("Fail to add OnClick for btn {0}", NEXTLEVEL_BTN_NAME);
