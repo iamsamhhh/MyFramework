@@ -45,6 +45,10 @@ namespace MyFramework
 
             BroadcastEvent("Do", "hello1");
             BroadcastEvent("Do2", "3", true);
+            Destroy(this);
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#endif
         }
 
         void OnDestroy()
