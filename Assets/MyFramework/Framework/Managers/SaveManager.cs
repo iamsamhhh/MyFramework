@@ -3,17 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System.Xml;
+using System.Runtime.Serialization.Formatters.Binary;
+using UnityEditor.Build.Content;
 
 namespace MyFramework{
 
-    public class SaveManager
+    public static class SaveManager
     {
         
         private const string valueTypeStr = "ValueType";
-        private static string filePath = Application.dataPath + "/SFramework/Resources/Data/";
+        private static string filePath = Application.persistentDataPath + "/Data/";
         const string FILE_TYPE = ".sfdat";
-        public void Save(float value, string name)
+
+        private static void FilePathCheck(){
+            if (!Directory.Exists(filePath)){
+                Directory.CreateDirectory(filePath);
+            }
+        }
+
+        public static void SaveObject(object obj, string name){
+            FilePathCheck();    
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream file = File.Create(filePath+name+FILE_TYPE);
+            var json = JsonUtility.ToJson(obj);
+            formatter.Serialize(file, json);
+            file.Close();
+        }
+        
+        public static void Save(float value, string name)
         {
+            FilePathCheck();
             XmlDocument xml = new XmlDocument();
 
             XmlElement root = xml.CreateElement("Root");
@@ -30,8 +49,9 @@ namespace MyFramework{
             xml.Save(filePath + name + FILE_TYPE);
         }
 
-        public void Save(int value, string name)
+        public static void Save(int value, string name)
         {
+            FilePathCheck();
             XmlDocument xml = new XmlDocument();
 
             XmlElement root = xml.CreateElement("Root");
@@ -48,8 +68,9 @@ namespace MyFramework{
             xml.Save(filePath + name + FILE_TYPE);
         }
 
-        public void Save(bool value, string name)
+        public static void Save(bool value, string name)
         {
+            FilePathCheck();
             XmlDocument xml = new XmlDocument();
 
             XmlElement root = xml.CreateElement("Root");
@@ -66,9 +87,9 @@ namespace MyFramework{
             xml.Save(filePath + name + FILE_TYPE);
         }
 
-        public void Save(Vector3 value, string name)
+        public static void Save(Vector3 value, string name)
         {
-            
+            FilePathCheck();
             XmlDocument xml = new XmlDocument();
 
             XmlElement root = xml.CreateElement("Root");
@@ -97,9 +118,9 @@ namespace MyFramework{
             xml.Save(filePath + name + FILE_TYPE);
         }
 
-        public void Save(Vector2 value, string name)
+        public static void Save(Vector2 value, string name)
         {
-            
+            FilePathCheck();
             XmlDocument xml = new XmlDocument();
 
             XmlElement root = xml.CreateElement("Root");
@@ -124,8 +145,9 @@ namespace MyFramework{
             xml.Save(filePath + name + FILE_TYPE);
         }
 
-        public void Save(string value, string name)
+        public static void Save(string value, string name)
         {
+            FilePathCheck();
             XmlDocument xml = new XmlDocument();
 
             XmlElement root = xml.CreateElement("Root");
@@ -143,7 +165,7 @@ namespace MyFramework{
         }
 
 
-        public bool TryGetNodeList(string name, out XmlNodeList nodeList)
+        public static bool TryGetNodeList(string name, out XmlNodeList nodeList)
         {
             
             XmlDocument xml = new XmlDocument();
@@ -161,12 +183,25 @@ namespace MyFramework{
             }
         }
 
+        public static object LoadObject(string name, object obj){
+            if (File.Exists(filePath + name + FILE_TYPE)){
+                BinaryFormatter binaryFormatter = new BinaryFormatter();
+                FileStream file = File.Open(filePath + name + FILE_TYPE, FileMode.Open);
+                JsonUtility.FromJsonOverwrite((string)binaryFormatter.Deserialize(file), obj);
+                file.Close();
+                return obj;
+            }
+            else{
+                return null;
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="name"></param>
         /// <returns>return 0 if not founded</returns>
-        public float LoadFloat(string name)
+        public static float LoadFloat(string name)
         {
             
             const string type = "float";
@@ -190,7 +225,7 @@ namespace MyFramework{
         /// </summary>
         /// <param name="name"></param>
         /// <returns>return 0 if not founded</returns>
-        public int LoadInt(string name)
+        public static int LoadInt(string name)
         {
             const string type = "int";
             XmlDocument xml = new XmlDocument();
@@ -213,7 +248,7 @@ namespace MyFramework{
         /// </summary>
         /// <param name="name"></param>
         /// <returns>false if not fouded.</returns>
-        public bool LoadBool(string name)
+        public static bool LoadBool(string name)
         {
             
             const string type = "bool";
@@ -237,7 +272,7 @@ namespace MyFramework{
         /// </summary>
         /// <param name="name"></param>
         /// <returns>return Vector3.zero if not fouded</returns>
-        public Vector3 LoadVector3(string name)
+        public static Vector3 LoadVector3(string name)
         {
             
             const string type = "Vector3";
@@ -265,7 +300,7 @@ namespace MyFramework{
         /// </summary>
         /// <param name="name"></param>
         /// <returns>return Vector2.zero if not fouded</returns>
-        public Vector2 LoadVector2(string name)
+        public static Vector2 LoadVector2(string name)
         {
             
             const string type = "Vector2";
@@ -292,7 +327,7 @@ namespace MyFramework{
         /// </summary>
         /// <param name="name"></param>
         /// <returns>return "" if not founded</returns>
-        public string LoadString(string name)
+        public static string LoadString(string name)
         {
             const string type = "string";
             XmlDocument xml = new XmlDocument();
