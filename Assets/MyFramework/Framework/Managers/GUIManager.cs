@@ -8,7 +8,7 @@ namespace MyFramework{
         Bottom = 3
     }
 
-    public class GUIMgr : SingletonBase<GUIMgr>{
+    public class GUIManager : SingletonBase<GUIManager>{
         
         private GameObject _canvas;
         public GameObject canvas{
