@@ -15,7 +15,7 @@ namespace MyFramework{
 #endif
         [SerializeField]
         GameObject bullet;
-        GUIMgr guiMgr = GUIMgr.instance;
+        GUIManager guiMgr = GUIManager.instance;
         const string FIRE_PANEL_NAME = "fire panel";
         const string NEXTLEVEL_BTN_NAME = "next level";
         const string FIRE_BTN_NAME = "Fire btn";

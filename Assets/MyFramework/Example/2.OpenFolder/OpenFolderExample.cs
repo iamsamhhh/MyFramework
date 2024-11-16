@@ -5,7 +5,7 @@ using UnityEngine;
 using System.IO;
 
 namespace MyFramework{
-    public partial class OpenFolderExample
+    public class OpenFolderExample
     {
 #if UNITY_EDITOR
         [MenuItem("MyFramework/Example/2.Open folder", false, 2)]
