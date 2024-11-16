@@ -1,12 +1,36 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace MyFramework
 {    
     public abstract partial class MonoBehaviourSimplify : MonoBehaviour
     {
+        #region Runner
+
+        Callback _update;
+
+        internal void OnUpdate(Callback update) {
+            _update += update;
+            Runner.instance.SFUpdate(update);
+        }
+
+        internal void OnStart(Callback start){
+            Runner.instance.SFStart(start);
+        }
+
+        internal void OnAwake(Callback awake){
+            Runner.instance.SFAwake(awake);
+        }
+
+        internal void RemoveAllLoacalUpdates(){
+            Runner.instance.RemoveUpdate(_update);
+            _update = null;
+        }
+
+        #endregion
         public void Show()
         {
             GameObjectSimplify.Show(gameObject);
