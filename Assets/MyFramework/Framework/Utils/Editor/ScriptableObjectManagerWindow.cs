@@ -2,12 +2,14 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 using System;
+using UnityEditor.Search;
 
 namespace MyFramework{
     public class ScriptableObjectEditor : EditorWindow
     {
         private static ScriptableObjectEditor window;
         private Dictionary<Type, List<ScriptableObject>> scriptableObjectDict = new Dictionary<Type, List<ScriptableObject>>();
+        private Dictionary<ScriptableObject, string> scriptableObjectPathDict = new Dictionary<ScriptableObject, string>();
         private ScriptableObject currenScriptableObject;
         private Vector2 scrollPosition;
         private bool showUnityScriptableObject = false;
@@ -30,10 +32,12 @@ namespace MyFramework{
 
         private void RefreshList(){
             scriptableObjectDict.Clear();
+            scriptableObjectPathDict.Clear();
             var assetGUIDs = AssetDatabase.FindAssets("t: ScriptableObject");
             foreach (var guid in assetGUIDs){
                 var path = AssetDatabase.GUIDToAssetPath(guid);
                 var scriptableObject = AssetDatabase.LoadAssetAtPath<ScriptableObject>(path);
+                scriptableObjectPathDict.Add(scriptableObject, path);
                 if (scriptableObjectDict.ContainsKey(scriptableObject.GetType())){
                     scriptableObjectDict[scriptableObject.GetType()].Add(scriptableObject);
                 }
@@ -92,6 +96,10 @@ namespace MyFramework{
 
             var editor = Editor.CreateEditor(currenScriptableObject);
             editor.OnInspectorGUI();
+
+            if (GUILayout.Button("Ping")){
+                SearchUtils.PingAsset(scriptableObjectPathDict[currenScriptableObject]);
+            }
 
 
             exit:
